@@ -73,7 +73,7 @@ function CaseStudyPage() {
         </section>
 
         {/* Summary */}
-        <section className="px-6 md:px-10 py-24 md:py-36 border-b border-wire">
+        <section className="px-6 md:px-10 py-24 md:py-36 border-b border-wire section-fade-top">
           <div className="max-w-[1440px] mx-auto grid grid-cols-12 gap-6">
             <div className="col-span-12 md:col-span-4">
               <span className="eyebrow">[ Overview ]</span>
@@ -90,7 +90,7 @@ function CaseStudyPage() {
         </section>
 
         {/* Three-column narrative */}
-        <section className="px-6 md:px-10 py-24 border-b border-wire">
+        <section className="px-6 md:px-10 py-24 border-b border-wire section-fade-top">
           <div className="max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
             {[
               { label: "The challenge", body: project.challenge },
@@ -113,7 +113,7 @@ function CaseStudyPage() {
         </section>
 
         {/* Full-bleed image */}
-        <section className="border-b border-wire">
+        <section className="border-b border-wire section-fade-top">
           <div className="max-w-[1440px] mx-auto px-6 md:px-10 py-16">
             <img
               src={project.image}

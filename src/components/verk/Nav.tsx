@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "@tanstack/react-router";
 import { LiveClock } from "./LiveClock";
 
 export function Nav({ onMenu }: { onMenu: () => void }) {
@@ -17,7 +18,7 @@ export function Nav({ onMenu }: { onMenu: () => void }) {
         scrolled ? "backdrop-blur-md bg-abyss/70 border-b border-wire/60" : "bg-transparent"
       }`}
     >
-      <a href="#top" className="flex items-center gap-2 group">
+      <Link to="/" className="flex items-center gap-2 group">
         <span className="w-2 h-2 rounded-full bg-volt animate-pulse" />
         <span className="font-display text-[15px] font-medium text-bone tracking-tight">
           Verk<span className="text-volt">.</span>
@@ -25,7 +26,7 @@ export function Nav({ onMenu }: { onMenu: () => void }) {
         <span className="eyebrow text-stone hidden sm:inline-block ml-3 border-l border-wire pl-3">
           Creative Studio / Est. 2018
         </span>
-      </a>
+      </Link>
 
       <LiveClock />
 

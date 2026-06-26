@@ -309,7 +309,7 @@ function VerkLanding() {
         </section>
 
         {/* ───────────── MANIFESTO ───────────── */}
-        <section id="manifesto" className="relative border-t border-wire overflow-hidden">
+        <section id="manifesto" className="relative border-t border-wire overflow-hidden section-fade-top">
           <div className="px-6 md:px-10 py-28 md:py-40 grid grid-cols-12 gap-6 max-w-[1440px] mx-auto">
             <div className="col-span-12 md:col-span-5 flex flex-col gap-4">
               <ScrollReveal direction="left">
@@ -360,7 +360,7 @@ function VerkLanding() {
         </section>
 
         {/* ───────────── STATS STRIP ───────────── */}
-        <section className="border-t border-wire bg-void/30">
+        <section className="border-t border-wire bg-void/30 section-fade-top">
           <div
             ref={statsRef}
             className="px-6 md:px-10 py-20 md:py-28 max-w-[1440px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-6"
@@ -372,7 +372,7 @@ function VerkLanding() {
         </section>
 
         {/* ───────────── SERVICES ───────────── */}
-        <section id="services" className="border-t border-wire">
+        <section id="services" className="border-t border-wire section-fade-top">
           <div className="px-6 md:px-10 pt-24 md:pt-32 pb-4 grid grid-cols-12 gap-6 max-w-[1440px] mx-auto">
             <div className="col-span-6 md:col-span-4 flex items-center gap-3">
               <span className="font-mono text-[11px] text-stone">[ 02 ]</span>
@@ -485,7 +485,7 @@ function VerkLanding() {
         </section>
 
         {/* ───────────── TESTIMONIALS ───────────── */}
-        <section className="border-t border-wire overflow-hidden">
+        <section className="border-t border-wire overflow-hidden section-fade-top">
           <div className="px-6 md:px-10 pt-24 md:pt-32 pb-28 md:pb-40 max-w-[1440px] mx-auto">
             <ScrollReveal>
               <div className="grid grid-cols-12 gap-6 mb-16">
@@ -563,7 +563,7 @@ function VerkLanding() {
         </section>
 
         {/* ───────────── CTA ───────────── */}
-        <section id="contact" className="relative py-40 md:py-64 px-6 md:px-10 border-t border-wire overflow-hidden">
+        <section id="contact" className="relative py-40 md:py-64 px-6 md:px-10 border-t border-wire overflow-hidden section-fade-top">
           <span
             aria-hidden
             className="absolute inset-x-0 top-0 font-display font-extralight ghost-text pointer-events-none select-none text-center leading-none"

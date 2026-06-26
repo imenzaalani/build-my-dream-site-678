@@ -99,7 +99,7 @@ export default function AboutPage() {
         </section>
 
         {/* Intro */}
-        <section className="px-6 md:px-10 py-24 md:py-36 border-b border-wire">
+        <section className="px-6 md:px-10 py-24 md:py-36 border-b border-wire section-fade-top">
           <div className="max-w-[1440px] mx-auto grid grid-cols-12 gap-6">
             <div className="col-span-12 md:col-span-4">
               <span className="eyebrow">[ 01 ] — Who we are</span>
@@ -122,7 +122,7 @@ export default function AboutPage() {
         </section>
 
         {/* Values */}
-        <section className="border-b border-wire">
+        <section className="border-b border-wire section-fade-top">
           <div className="px-6 md:px-10 pt-24 md:pt-32 pb-4 grid grid-cols-12 gap-6 max-w-[1440px] mx-auto">
             <div className="col-span-12 flex items-center gap-3">
               <span className="eyebrow">[ 02 ] — How we work</span>
@@ -149,7 +149,7 @@ export default function AboutPage() {
         </section>
 
         {/* Team */}
-        <section className="px-6 md:px-10 py-24 md:py-36 border-b border-wire">
+        <section className="px-6 md:px-10 py-24 md:py-36 border-b border-wire section-fade-top">
           <div className="max-w-[1440px] mx-auto">
             <span className="eyebrow mb-14 block">[ 03 ] — The people</span>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
@@ -177,7 +177,7 @@ export default function AboutPage() {
         </section>
 
         {/* CTA */}
-        <section className="px-6 md:px-10 py-24 md:py-32 border-b border-wire">
+        <section className="px-6 md:px-10 py-24 md:py-32 border-b border-wire section-fade-top">
           <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-start md:items-end justify-between gap-8">
             <p
               className="font-display font-light text-bone tracking-tight leading-none"
