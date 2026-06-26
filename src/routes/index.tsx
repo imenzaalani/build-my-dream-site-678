@@ -6,6 +6,7 @@ import { Loader } from "@/components/verk/Loader";
 import { Nav } from "@/components/verk/Nav";
 import { FullscreenMenu } from "@/components/verk/FullscreenMenu";
 import { WorkList } from "@/components/verk/WorkList";
+import { ContactForm } from "@/components/verk/ContactForm";
 
 export const Route = createFileRoute("/")({
   component: VerkLanding,
@@ -352,19 +353,14 @@ function VerkLanding() {
               We take on a small number of projects each quarter. Q3 2026 is open.
             </p>
 
-            <div className="mt-14 flex flex-col items-center gap-6">
-              <a
-                href="mailto:hello@verk.studio"
-                data-magnetic
-                className="group inline-flex items-center gap-4 bg-volt text-abyss px-8 py-5 hover:gap-6 transition-all"
-              >
-                <span className="font-display text-sm font-medium tracking-wide uppercase">Start a project</span>
-                <span className="text-xl translate-y-px">↗</span>
-              </a>
-              <a href="mailto:hello@verk.studio" className="eyebrow text-stone hover:text-bone transition-colors">
-                or hello@verk.studio
-              </a>
-            </div>
+            <ContactForm />
+
+            <a
+              href="mailto:hello@verk.studio"
+              className="eyebrow text-stone hover:text-bone transition-colors mt-10 inline-block"
+            >
+              or hello@verk.studio
+            </a>
           </div>
         </section>
 
