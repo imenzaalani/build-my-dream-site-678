@@ -3,59 +3,78 @@ import { Link } from "@tanstack/react-router";
 import { projects } from "@/lib/projects";
 import { motion, useMotionValue, useSpring } from "motion/react";
 
-type FloatingCard = {
-  project: typeof projects[0];
-  x: number;
-  y: number;
+// Layout is computed once after mount so card dimensions are known.
+type CardLayout = {
+  slug: string;
+  col: number;
+  row: number;
   rotation: number;
   scale: number;
   zIndex: number;
 };
 
-// TRIONN-inspired "Floating Project Gallery" — cards drift in space,
-// snap to hover, and link to case studies.
+const COLS_DESKTOP = 3;
+const COLS_MOBILE = 2;
+// Card width as % of container, with a small gutter.
+const COL_PCT_DESKTOP = 30; // leaves ~5% gutter between 3 cols
+const COL_PCT_MOBILE = 44;  // leaves ~6% gutter between 2 cols
+// Vertical row stride in vh units (relative to card visual height).
+const ROW_STRIDE_VH = 32;
+
+function buildLayouts(cols: number): CardLayout[] {
+  return projects.map((p, i) => ({
+    slug: p.slug,
+    col: i % cols,
+    row: Math.floor(i / cols),
+    // Deterministic "random" rotation seeded by index
+    rotation: (((i * 17 + 3) % 9) - 4) * 0.8,
+    scale: 1,
+    zIndex: i,
+  }));
+}
+
 export function FloatingWork() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [cards, setCards] = useState<FloatingCard[]>([]);
+  const [layouts, setLayouts] = useState<CardLayout[]>([]);
+  const [cols, setCols] = useState(COLS_DESKTOP);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
-  // Deterministic layout so SSR and client match.
   useEffect(() => {
-    const cols = window.innerWidth < 768 ? 2 : 3;
-    const generated: FloatingCard[] = projects.map((p, i) => {
-      const col = i % cols;
-      const row = Math.floor(i / cols);
-      const xBase = (col / (cols - 1)) * 80 + 10;
-      const yBase = row * 38;
-      // Small random offsets for organic feel — seeded by index so stable.
-      const xOff = ((i * 37 + 11) % 14) - 7;
-      const yOff = ((i * 53 + 7) % 12) - 6;
-      return {
-        project: p,
-        x: xBase + xOff,
-        y: yBase + yOff,
-        rotation: ((i * 17 + 3) % 9) - 4,
-        scale: 0.92 + (i % 3) * 0.04,
-        zIndex: i,
-      };
-    });
-    setCards(generated);
+    const update = () => {
+      const c = window.innerWidth < 768 ? COLS_MOBILE : COLS_DESKTOP;
+      setCols(c);
+      setLayouts(buildLayouts(c));
+    };
+    update();
+    window.addEventListener("resize", update, { passive: true });
+    return () => window.removeEventListener("resize", update);
   }, []);
+
+  const numRows = Math.ceil(projects.length / cols);
+  // Container height: rows × stride + extra for bottom drift
+  const containerVh = numRows * ROW_STRIDE_VH + 16;
 
   return (
     <div
-      ref={containerRef}
       className="relative w-full"
-      style={{ height: "clamp(560px, 80vw, 900px)" }}
+      style={{
+        height: `${containerVh}vh`,
+        // Allow drifting cards to be visible beyond the container edges
+        overflow: "visible",
+      }}
     >
-      {cards.map((card, i) => (
+      {layouts.map((layout, i) => (
         <FloatingCard
-          key={card.project.slug}
-          card={card}
+          key={layout.slug}
+          project={projects[i]}
+          layout={layout}
+          cols={cols}
+          colPct={cols === COLS_MOBILE ? COL_PCT_MOBILE : COL_PCT_DESKTOP}
+          rowStride={ROW_STRIDE_VH}
           isActive={activeIndex === i}
           onHover={() => setActiveIndex(i)}
           onLeave={() => setActiveIndex(null)}
           dimmed={activeIndex !== null && activeIndex !== i}
+          index={i}
         />
       ))}
     </div>
@@ -63,81 +82,120 @@ export function FloatingWork() {
 }
 
 function FloatingCard({
-  card,
+  project,
+  layout,
+  cols,
+  colPct,
+  rowStride,
   isActive,
   onHover,
   onLeave,
   dimmed,
+  index,
 }: {
-  card: FloatingCard;
+  project: typeof projects[0];
+  layout: CardLayout;
+  cols: number;
+  colPct: number;
+  rowStride: number;
   isActive: boolean;
   onHover: () => void;
   onLeave: () => void;
   dimmed: boolean;
+  index: number;
 }) {
-  // Continuous idle drift.
   const driftX = useMotionValue(0);
   const driftY = useMotionValue(0);
-  const springX = useSpring(driftX, { stiffness: 60, damping: 20 });
-  const springY = useSpring(driftY, { stiffness: 60, damping: 20 });
+  const springX = useSpring(driftX, { stiffness: 50, damping: 18 });
+  const springY = useSpring(driftY, { stiffness: 50, damping: 18 });
   const rafRef = useRef(0);
-  const timeRef = useRef(Math.random() * Math.PI * 2);
+  // Stable phase per card — derived from index so it never randomises on re-render
+  const phase = (index * 1.3) % (Math.PI * 2);
 
   useEffect(() => {
-    const speed = 0.4 + Math.random() * 0.3;
-    const ampX = 8 + Math.random() * 6;
-    const ampY = 6 + Math.random() * 5;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) return;
+
+    const speed = 0.35 + (index % 3) * 0.12;
+    const ampX = 6 + (index % 4) * 2.5;
+    const ampY = 5 + (index % 3) * 2;
+    let t = phase;
 
     const tick = () => {
-      timeRef.current += 0.008 * speed;
-      driftX.set(Math.sin(timeRef.current) * ampX);
-      driftY.set(Math.cos(timeRef.current * 0.7) * ampY);
+      t += 0.007 * speed;
+      driftX.set(Math.sin(t) * ampX);
+      driftY.set(Math.cos(t * 0.8) * ampY);
       rafRef.current = requestAnimationFrame(tick);
     };
     rafRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [driftX, driftY]);
+  }, [driftX, driftY, index, phase]);
+
+  // Column positions: evenly spread across container width
+  // For 3 cols: 5%, 35%, 65%   For 2 cols: 3%, 53%
+  const gutter = (100 - cols * colPct) / (cols + 1);
+  const leftPct = gutter + layout.col * (colPct + gutter);
+
+  // Add a staggered vertical offset per column for the "staircase" look
+  const colVerticalOffset = layout.col * (rowStride * 0.4);
 
   return (
     <motion.div
       style={{
         position: "absolute",
-        left: `${card.x}%`,
-        top: `${card.y}px`,
+        left: `${leftPct}%`,
+        top: `${layout.row * rowStride + colVerticalOffset}vh`,
+        width: `${colPct}%`,
         x: springX,
         y: springY,
-        zIndex: isActive ? 50 : card.zIndex,
+        zIndex: isActive ? 50 : layout.zIndex,
       }}
+      initial={{ opacity: 0, y: 40, rotate: layout.rotation }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.7, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
       animate={{
-        rotate: isActive ? 0 : card.rotation,
-        scale: isActive ? 1.06 : dimmed ? 0.88 : card.scale,
-        opacity: dimmed ? 0.35 : 1,
+        rotate: isActive ? 0 : layout.rotation,
+        scale: isActive ? 1.04 : dimmed ? 0.93 : 1,
+        opacity: dimmed ? 0.3 : 1,
       }}
-      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
       onMouseEnter={onHover}
       onMouseLeave={onLeave}
-      className="cursor-pointer"
     >
-      <Link to="/work/$slug" params={{ slug: card.project.slug }}>
-        <div
-          className="relative overflow-hidden bg-void border border-wire group"
-          style={{ width: "clamp(180px, 20vw, 280px)", aspectRatio: "4/3" }}
-        >
+      <Link to="/work/$slug" params={{ slug: project.slug }} className="block group">
+        {/* Card */}
+        <div className="relative overflow-hidden bg-void border border-wire" style={{ aspectRatio: "4/3" }}>
           <img
-            src={card.project.image}
-            alt={card.project.title}
+            src={project.image}
+            alt={project.title}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           />
-          {/* Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-abyss/90 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
-          <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 group-hover:translate-y-0 transition-transform duration-400 opacity-0 group-hover:opacity-100">
-            <p className="font-display font-light text-bone text-sm tracking-tight">{card.project.title}</p>
-            <p className="eyebrow text-volt mt-1">{card.project.category}</p>
+          {/* Dark gradient overlay on hover */}
+          <div className="absolute inset-0 bg-gradient-to-t from-abyss/90 via-abyss/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400" />
+          {/* Info overlay slides up */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5 translate-y-3 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-400">
+            <p className="font-display font-light text-bone tracking-tight" style={{ fontSize: "clamp(13px, 1.4vw, 18px)" }}>
+              {project.title}
+            </p>
+            <p className="eyebrow text-volt mt-1">{project.category}</p>
           </div>
-          {/* Index badge */}
-          <div className="absolute top-3 left-3 font-mono text-[10px] text-stone">
-            {card.project.index}
+          {/* Index + year badge — always visible */}
+          <div className="absolute top-3 left-3 flex items-center gap-2">
+            <span className="font-mono text-[10px] text-bone/60 bg-abyss/60 px-1.5 py-0.5">
+              {project.index}
+            </span>
           </div>
+          <div className="absolute top-3 right-3">
+            <span className="font-mono text-[10px] text-bone/60 bg-abyss/60 px-1.5 py-0.5">
+              {project.year}
+            </span>
+          </div>
+        </div>
+
+        {/* Caption below card */}
+        <div className="mt-3 px-1 flex items-center justify-between">
+          <span className="text-stone text-xs tracking-tight truncate">{project.client}</span>
+          <span className="text-stone text-xs font-mono opacity-0 group-hover:opacity-100 transition-opacity">↗</span>
         </div>
       </Link>
     </motion.div>
