@@ -580,9 +580,9 @@ function VerkLanding() {
             <SplitText
               text="Ready?"
               as="h2"
-              className="font-display font-medium text-bone mt-8 tracking-tight"
+              className="font-display font-medium text-bone mt-8 tracking-tight whitespace-nowrap"
               style={{ fontSize: "clamp(72px, 14vw, 220px)", lineHeight: "0.9" }}
-              splitBy="chars"
+              splitBy="words"
               delay={0.1}
             />
 
