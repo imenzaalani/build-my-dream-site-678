@@ -10,16 +10,23 @@ const schema = z.object({
 
 type Errors = Partial<Record<keyof z.infer<typeof schema>, string>>;
 
+const FUNCTION_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/contact`;
+const ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+
 export function ContactForm() {
   const [values, setValues] = useState({ name: "", email: "", project: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
   const [sent, setSent] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
-  const update = (k: keyof typeof values) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setValues((v) => ({ ...v, [k]: e.target.value }));
-    if (errors[k]) setErrors((er) => ({ ...er, [k]: undefined }));
-  };
+  const update =
+    (k: keyof typeof values) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+      setValues((v) => ({ ...v, [k]: e.target.value }));
+      if (errors[k]) setErrors((er) => ({ ...er, [k]: undefined }));
+      if (serverError) setServerError(null);
+    };
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,15 +41,33 @@ export function ContactForm() {
       return;
     }
     setSubmitting(true);
-    await new Promise((r) => setTimeout(r, 700));
-    setSubmitting(false);
-    setSent(true);
+    setServerError(null);
+    try {
+      const res = await fetch(FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${ANON_KEY}`,
+        },
+        body: JSON.stringify(parsed.data),
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error((body as { error?: string }).error ?? "Submission failed");
+      }
+      setSent(true);
+    } catch (err) {
+      setServerError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const reset = () => {
     setValues({ name: "", email: "", project: "" });
     setErrors({});
     setSent(false);
+    setServerError(null);
   };
 
   return (
@@ -118,6 +143,10 @@ export function ContactForm() {
               />
             </Field>
 
+            {serverError && (
+              <p className="text-volt text-sm font-serif italic">{serverError}</p>
+            )}
+
             <button
               type="submit"
               disabled={submitting}
@@ -151,7 +180,11 @@ function Field({
     <div className="flex flex-col gap-2">
       <label htmlFor={id} className="eyebrow text-stone flex items-center justify-between">
         <span>{label}</span>
-        {error && <span className="text-volt normal-case tracking-normal text-[11px] italic font-serif">{error}</span>}
+        {error && (
+          <span className="text-volt normal-case tracking-normal text-[11px] italic font-serif">
+            {error}
+          </span>
+        )}
       </label>
       {children}
     </div>

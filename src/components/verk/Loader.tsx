@@ -6,6 +6,14 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
+    // Skip animation for users who prefer reduced motion.
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setDone(true);
+      onComplete();
+      return;
+    }
+
     const duration = 1600;
     const steps = 100;
     const interval = duration / steps;
@@ -31,6 +39,8 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
           exit={{ y: "-100%" }}
           transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
           className="fixed inset-0 z-[9999] bg-abyss flex flex-col"
+          role="status"
+          aria-label="Loading Verk Studio"
         >
           {/* Top bar */}
           <div className="flex items-center justify-between px-8 py-6 border-b border-wire/40">
@@ -55,15 +65,23 @@ export function Loader({ onComplete }: { onComplete: () => void }) {
               <span
                 className="font-display font-extralight text-bone leading-none tabular"
                 style={{ fontSize: "clamp(72px, 12vw, 160px)" }}
+                aria-hidden
               >
                 {String(count).padStart(3, "0")}
               </span>
-              <span className="eyebrow translate-y-[-12px]">%</span>
+              <span className="eyebrow translate-y-[-12px]" aria-hidden>%</span>
             </div>
           </div>
 
           {/* Progress line */}
-          <div className="absolute bottom-0 left-0 h-[2px] bg-volt" style={{ width: `${count}%` }} />
+          <div
+            className="absolute bottom-0 left-0 h-[2px] bg-volt"
+            style={{ width: `${count}%` }}
+            role="progressbar"
+            aria-valuenow={count}
+            aria-valuemin={0}
+            aria-valuemax={100}
+          />
         </motion.div>
       )}
     </AnimatePresence>
