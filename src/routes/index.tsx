@@ -159,16 +159,16 @@ function VerkLanding() {
                 <span className="text-stone">craft always,</span> built to outlast the trend cycle.
               </p>
 
-              <div className="mt-20 grid grid-cols-3 gap-6 md:gap-10 border-t border-wire pt-12">
+              <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-10 md:gap-14 border-t border-wire pt-12">
                 {[
-                  { n: "MMXVIII", l: "Established" },
+                  { n: "2018", l: "Established" },
                   { n: "07", l: "Years in practice" },
                   { n: "40+", l: "Projects delivered" },
                 ].map((s) => (
-                  <div key={s.l} className="flex flex-col gap-2">
+                  <div key={s.l} className="flex flex-col gap-3">
                     <span
                       className="font-display font-extralight text-bone leading-none tabular tracking-tight"
-                      style={{ fontSize: "clamp(36px, 5.5vw, 96px)" }}
+                      style={{ fontSize: "clamp(48px, 6vw, 88px)" }}
                     >
                       {s.n}
                     </span>
