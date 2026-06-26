@@ -51,15 +51,15 @@
   --radius: 0.5rem;
 
   /* Verk palette */
-  --abyss: oklch(0.08 0.005 260);   /* #040508 */
-  --void: oklch(0.12 0 0);           /* #0A0A0A */
-  --surface: oklch(0.15 0.003 260);  /* #111114 */
-  --lift: oklch(0.21 0.003 260);     /* #1C1C1E */
-  --bone: oklch(0.95 0.005 90);      /* #EFEFEA */
-  --stone: oklch(0.62 0.005 90);     /* #8A8A82 */
-  --ghost: oklch(0.32 0 0);          /* #3A3A3A */
-  --wire: oklch(0.26 0 0);           /* #2A2A2A */
-  --volt: oklch(0.93 0.18 125);      /* #C8FA5F */
+  --abyss: oklch(0.08 0.005 260);
+  --void: oklch(0.12 0 0);
+  --surface: oklch(0.15 0.003 260);
+  --lift: oklch(0.21 0.003 260);
+  --bone: oklch(0.95 0.005 90);
+  --stone: oklch(0.62 0.005 90);
+  --ghost: oklch(0.32 0 0);
+  --wire: oklch(0.26 0 0);
+  --volt: oklch(0.93 0.18 125);
 
   /* shadcn mapping → dark by default */
   --background: var(--abyss);
@@ -99,7 +99,6 @@
     overflow-x: hidden;
   }
 
-  /* Hide native cursor on pointer devices when custom cursor is active */
   @media (hover: hover) and (pointer: fine) {
     html.has-custom-cursor,
     html.has-custom-cursor * {
@@ -192,3 +191,137 @@
 .form-input::placeholder { color: var(--ghost); }
 .form-input:focus { border-bottom-color: var(--volt); }
 
+/* ── Hero glow ── */
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 50% at 50% 70%, oklch(0.93 0.18 125 / 0.07) 0%, transparent 70%);
+}
+
+/* ── Scroll bounce animation ── */
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+.scroll-bounce {
+  animation: scroll-bounce 2s ease-in-out infinite;
+}
+
+/* ── Service row hover bar ── */
+.service-row {
+  position: relative;
+  overflow: hidden;
+}
+.service-row::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  background: linear-gradient(90deg, oklch(0.93 0.18 125 / 0.08) 0%, transparent 100%);
+  transition: width 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.service-row:hover::before {
+  width: 100%;
+}
+
+/* ── Stats number glow ── */
+.stat-number {
+  background: linear-gradient(180deg, var(--bone) 40%, var(--stone) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Testimonial card ── */
+.testimonial-card {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--void) 100%);
+  border: 1px solid var(--wire);
+  position: relative;
+  overflow: hidden;
+}
+.testimonial-card::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--volt), transparent);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.testimonial-card:hover::after {
+  opacity: 1;
+}
+
+/* ── Section fade gradient ── */
+.section-fade-top {
+  position: relative;
+}
+.section-fade-top::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, var(--abyss), transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── Volt pill tag ── */
+.volt-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid oklch(0.93 0.18 125 / 0.3);
+  color: var(--volt);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  background: oklch(0.93 0.18 125 / 0.05);
+}
+
+/* ── Footer wordmark gradient ── */
+.footer-wordmark {
+  background: linear-gradient(180deg, var(--ghost) 0%, transparent 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* ── Hover underline slide ── */
+.hover-underline {
+  position: relative;
+}
+.hover-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: var(--volt);
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.hover-underline:hover::after {
+  width: 100%;
+}
+
+/* ── Pulsing availability dot ── */
+@keyframes availability-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.93 0.18 125 / 0.6); }
+  50% { box-shadow: 0 0 0 6px oklch(0.93 0.18 125 / 0); }
+}
+.availability-dot {
+  animation: availability-pulse 2.5s ease-in-out infinite;
+}
