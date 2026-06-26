@@ -6,6 +6,7 @@ import { Loader } from "@/components/verk/Loader";
 import { Nav } from "@/components/verk/Nav";
 import { FullscreenMenu } from "@/components/verk/FullscreenMenu";
 import { WorkList } from "@/components/verk/WorkList";
+import { ContactForm } from "@/components/verk/ContactForm";
 
 export const Route = createFileRoute("/")({
   component: VerkLanding,
