@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Cursor } from "@/components/verk/Cursor";
@@ -170,10 +170,8 @@ function VerkLanding() {
       <main id="top" className="bg-abyss text-bone selection:bg-volt selection:text-abyss">
         {/* ───────────── HERO ───────────── */}
         <section className="relative min-h-screen flex flex-col justify-end overflow-hidden">
-          {/* Radial glow behind headline */}
           <div className="hero-glow" />
 
-          {/* Ghost background wordmark */}
           <div
             aria-hidden
             className="absolute inset-0 flex items-center justify-center pointer-events-none select-none"
@@ -186,13 +184,11 @@ function VerkLanding() {
             </span>
           </div>
 
-          {/* Availability badge — top right floating */}
           <div className="absolute top-28 right-6 md:right-10 z-10 hidden md:flex items-center gap-2 volt-tag">
             <span className="w-1.5 h-1.5 rounded-full bg-volt availability-dot" />
             Q3 2026 Open
           </div>
 
-          {/* Top eyebrow row */}
           <div className="relative z-10 px-6 md:px-10 pt-32 md:pt-40 grid grid-cols-12 gap-6">
             <div className="col-span-12 md:col-span-6 flex items-center gap-4">
               <span className="w-10 h-px bg-stone" />
@@ -203,7 +199,6 @@ function VerkLanding() {
             </div>
           </div>
 
-          {/* Main headline */}
           <div className="relative z-10 px-6 md:px-10 pb-12 md:pb-20 mt-20 md:mt-32">
             <motion.h1
               initial="hidden"
@@ -298,14 +293,14 @@ function VerkLanding() {
                 <span className="text-bone/70">craft always,</span> built to outlast the trend cycle.
               </p>
 
-              <a
-                href="#"
-                className="inline-flex items-center gap-3 mt-12 group eyebrow text-bone border-b border-wire pb-2 hover:border-volt hover:text-volt transition-colors hover-underline"
+              <Link
+                to="/about"
+                className="inline-flex items-center gap-3 mt-12 group eyebrow text-bone border-b border-wire pb-2 hover:border-volt hover:text-volt transition-colors"
               >
                 <span className="w-10 h-px bg-current transition-all group-hover:w-16" />
                 About the studio
                 <span className="text-base group-hover:translate-x-1 transition-transform">↗</span>
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -350,8 +345,8 @@ function VerkLanding() {
                 onMouseEnter={() => setActiveService(i)}
                 onMouseLeave={() => setActiveService(null)}
               >
-                <a
-                  href="#"
+                <Link
+                  to="/about"
                   data-magnetic
                   className="grid grid-cols-[40px_1fr_auto] md:grid-cols-[60px_1.4fr_1.2fr_1fr_60px] items-center gap-4 px-4 py-8 md:py-11 transition-colors"
                 >
@@ -367,8 +362,7 @@ function VerkLanding() {
                   <span className="hidden md:inline-block text-sm text-stone group-hover:text-bone transition-colors">{s.tags}</span>
                   <span className="hidden md:inline-block text-sm text-stone italic font-serif max-w-xs group-hover:text-bone/80 transition-colors">{s.note}</span>
                   <span className="text-stone text-right text-lg group-hover:text-volt group-hover:translate-x-1.5 transition-all duration-300">→</span>
-                </a>
-                {/* Expandable detail row */}
+                </Link>
                 <div
                   className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                     activeService === i ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
@@ -394,13 +388,13 @@ function VerkLanding() {
               <span className="eyebrow">Selected work · 2023—25</span>
             </div>
             <div className="col-span-6 md:col-span-8 flex justify-end items-end">
-              <a
+              <Link
+                to="/journal"
                 className="eyebrow text-stone hover:text-bone transition-colors border-b border-wire pb-1 hover:border-volt flex items-center gap-2 group"
-                href="#"
               >
-                View all
+                View archive
                 <span className="group-hover:translate-x-1 transition-transform">↗</span>
-              </a>
+              </Link>
             </div>
           </div>
           <div className="max-w-[1440px] mx-auto">
@@ -521,7 +515,6 @@ function VerkLanding() {
 
         {/* ───────────── FOOTER ───────────── */}
         <footer className="border-t border-wire px-6 md:px-10 pt-20 pb-10 bg-void relative overflow-hidden">
-          {/* Large background wordmark */}
           <div
             aria-hidden
             className="absolute bottom-0 left-0 right-0 overflow-hidden pointer-events-none select-none"
@@ -557,30 +550,20 @@ function VerkLanding() {
             <div className="col-span-6 md:col-span-3 md:col-start-7">
               <p className="eyebrow mb-5">Studio</p>
               <ul className="flex flex-col gap-3 text-bone text-sm">
-                {["About", "Services", "Selected work", "Journal"].map((item) => (
-                  <li key={item}>
-                    <a
-                      href={`#${item.toLowerCase().replace(" ", "")}`}
-                      className="hover:text-volt transition-colors hover-underline inline-block"
-                    >
-                      {item}
-                    </a>
-                  </li>
-                ))}
+                <li><Link to="/about" className="hover:text-volt transition-colors hover-underline inline-block">About</Link></li>
+                <li><Link to="/" hash="services" className="hover:text-volt transition-colors hover-underline inline-block">Services</Link></li>
+                <li><Link to="/" hash="work" className="hover:text-volt transition-colors hover-underline inline-block">Selected work</Link></li>
+                <li><Link to="/journal" className="hover:text-volt transition-colors hover-underline inline-block">Journal</Link></li>
               </ul>
             </div>
 
             <div className="col-span-6 md:col-span-2">
               <p className="eyebrow mb-5">Elsewhere</p>
               <ul className="flex flex-col gap-3 text-bone text-sm">
-                {["Instagram", "LinkedIn", "Dribbble", "Are.na"].map((item) => (
-                  <li key={item}>
-                    <a href="#" className="hover:text-volt transition-colors inline-flex items-center gap-1 group">
-                      {item}
-                      <span className="text-stone group-hover:text-volt transition-colors group-hover:translate-x-0.5 group-hover:-translate-y-0.5 inline-block transition-transform">↗</span>
-                    </a>
-                  </li>
-                ))}
+                <li><a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-volt transition-colors inline-flex items-center gap-1 group">Instagram <span className="text-stone group-hover:text-volt">↗</span></a></li>
+                <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-volt transition-colors inline-flex items-center gap-1 group">LinkedIn <span className="text-stone group-hover:text-volt">↗</span></a></li>
+                <li><a href="https://dribbble.com" target="_blank" rel="noopener noreferrer" className="hover:text-volt transition-colors inline-flex items-center gap-1 group">Dribbble <span className="text-stone group-hover:text-volt">↗</span></a></li>
+                <li><a href="https://are.na" target="_blank" rel="noopener noreferrer" className="hover:text-volt transition-colors inline-flex items-center gap-1 group">Are.na <span className="text-stone group-hover:text-volt">↗</span></a></li>
               </ul>
             </div>
 
@@ -602,11 +585,9 @@ function VerkLanding() {
             <span>© MMXXVI · Verk Studio Lda.</span>
             <span className="eyebrow hidden md:inline">Rua dos Anjos · Lisboa · PT</span>
             <div className="flex items-center gap-4">
-              {["Privacy", "Terms", "Cookies"].map((item) => (
-                <a key={item} href="#" className="hover:text-volt transition-colors">
-                  {item}
-                </a>
-              ))}
+              <span className="hover:text-volt transition-colors cursor-pointer">Privacy</span>
+              <span className="hover:text-volt transition-colors cursor-pointer">Terms</span>
+              <span className="hover:text-volt transition-colors cursor-pointer">Cookies</span>
             </div>
           </div>
         </footer>
